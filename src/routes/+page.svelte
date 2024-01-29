@@ -196,7 +196,7 @@
 		<div class="self-fill"></div>
 		<button class="m-md max-w-full" on:click={() => (chats = [])}>Clear Chat</button>
 	</aside>
-	<footer class="px-md bd-t tx-text-mute row content-between">
+	<footer class="px-md max-h-6 bd-t tx-text-mute row content-between">
 		<span> </span>
 		<span>
 			Active Model: <span class="px-xs">{model}</span> | Response Streaming:

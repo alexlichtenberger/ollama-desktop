@@ -14,7 +14,9 @@
 </script>
 
 <div
-	class="px-md bd-rad h-fit-content w-fit-content {user ? 'primary self-end ml-xl' : 'bd mr-xl'}"
+	class="px-md bd-rad h-fit-content w-fit-content max-w-256 {user
+		? 'primary self-end ml-xl'
+		: 'bd mr-xl'}"
 >
 	{#if content === ''}
 		<progress class="my-md"></progress>
