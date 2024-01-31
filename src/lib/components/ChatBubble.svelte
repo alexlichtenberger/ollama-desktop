@@ -11,7 +11,6 @@
 	beforeUpdate(() => {
 		message = md.render(content);
 	});
-
 </script>
 
 <div

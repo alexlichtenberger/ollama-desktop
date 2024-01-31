@@ -1,8 +1,7 @@
 <script lang="ts">
 	import ChatBubble from '$lib/components/ChatBubble.svelte';
 	import { chatStream, createModel, delModel, genStream, getModels, pullModel } from '$lib/ollama';
-	import hljs from 'highlight.js';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	let chats: { role: string; content: string }[] = [];
 	let models: string[] = [];
@@ -35,16 +34,12 @@
 
 		chats = [...chats, { role: 'assistant', content: '' }];
 
+		document.getElementById('bottom')?.scrollIntoView();
+
 		for await (let part of chatGenerator) {
-			// if (part.message.content === '\n') part.message.content = '<br>';
 			chats[chats.length - 1].content += part.message.content;
 			document.getElementById('bottom')?.scrollIntoView();
 		}
-
-
-		afterUpdate(() => {
-		hljs.highlightAll();
-	})
 
 		loading = false;
 	};
@@ -58,10 +53,10 @@
 		const completionGenerator = genStream(text, model);
 
 		for await (let part of completionGenerator) {
-			text += part.response
+			text += part.response;
 		}
 
-		loading = false
+		loading = false;
 	};
 
 	// new model creation
@@ -152,27 +147,33 @@
 				</div>
 				<div id="bottom"></div>
 			</div>
-			<form on:submit|preventDefault={sendMessage} class="w-full row content-fill">
-				<fieldset class="m-md" disabled={loading}>
-					<select name="role" id="role" bind:value={role} disabled={loading}>
-						<option value="user">USER</option>
-						<option value="system">SYSTEM</option>
-					</select>
-					<input
-						class="self-fill"
-						type="text"
-						name="message"
-						id="message"
-						placeholder="Enter your prompt..."
-						bind:value={content}
-						disabled={loading}
-					/>
-					<button type="submit" disabled={loading}>Send</button>
-				</fieldset>
-				<button class="my-md mr-md" on:click={() => (chats = [])} disabled={loading}
-					>Clear Chat</button
+			<div class="row">
+				<form on:submit|preventDefault={sendMessage} class="w-full row content-fill">
+					<fieldset class="m-md" disabled={loading}>
+						<select name="role" id="role" bind:value={role} disabled={loading}>
+							<option value="user">USER</option>
+							<option value="system">SYSTEM</option>
+						</select>
+						<input
+							class="self-fill"
+							type="text"
+							name="message"
+							id="message"
+							placeholder="Enter your prompt..."
+							bind:value={content}
+							disabled={loading}
+						/>
+						<button type="submit" disabled={loading}>Send</button>
+					</fieldset>
+				</form>
+				<button
+					class="my-md mr-md min-w-max-content"
+					on:click={() => (chats = [])}
+					disabled={loading}
 				>
-			</form>
+					Clear Chat
+				</button>
+			</div>
 		{/if}
 	</section>
 	<aside class="min-w-64 bd-r h-full min-h-0 col">
